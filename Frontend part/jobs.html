@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Listings - Career Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Global Styles ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f7faff;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 20px 50px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #007bff;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #0056b3;
+    }
+
+    /* ===== Layout ===== */
+    .jobs-section {
+      display: flex;
+      flex-grow: 1;
+      padding: 30px 50px;
+      gap: 25px;
+    }
+
+    /* ===== Sidebar Filter ===== */
+    .filter-box {
+      width: 280px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+    }
+
+    .filter-box h3 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .filter-box label {
+      font-weight: 600;
+      margin-top: 10px;
+      display: block;
+    }
+
+    .filter-box select,
+    .filter-box input {
+      width: 100%;
+      margin-top: 5px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    .filter-box button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px;
+      border: none;
+      border-radius: 25px;
+      background: #007bff;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .filter-box button:hover {
+      background: #0056b3;
+    }
+
+    /* ===== Job List ===== */
+    .job-list {
+      flex-grow: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    /* ===== Job Card ===== */
+    .job-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .job-card h4 {
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+
+    .job-card p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .company {
+      font-weight: 600;
+      color: #333;
+    }
+
+    /* ===== Job Detail Modal ===== */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+      text-align: left;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-content h3 {
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .close-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .close-btn:hover {
+      background: #0056b3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #ffffff;
+      color: #007bff;
+      font-weight: 600;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Scrollbar */
+    .job-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .job-list::-webkit-scrollbar-thumb {
+      background: #007bff;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Career Connect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="login.html">Logout</a>
+    </nav>
+  </header>
+
+  <div class="jobs-section">
+    <!-- Sidebar Filter -->
+    <div class="filter-box">
+      <h3>Filter Jobs</h3>
+      <label for="role">Role</label>
+      <select id="role">
+        <option value="">All</option>
+        <option>Web Developer</option>
+        <option>Data Analyst</option>
+        <option>Software Engineer</option>
+        <option>UI/UX Designer</option>
+        <option>AI Engineer</option>
+      </select>
+
+      <label for="location">Location</label>
+      <input type="text" id="location" placeholder="Enter location">
+
+      <label for="company">Company</label>
+      <select id="company">
+        <option value="">All</option>
+        <option>TCS</option>
+        <option>Infosys</option>
+        <option>Google</option>
+        <option>Microsoft</option>
+        <option>Amazon</option>
+        <option>Wipro</option>
+        <option>IBM</option>
+        <option>Accenture</option>
+      </select>
+
+      <label for="experience">Experience</label>
+      <select id="experience">
+        <option value="">Any</option>
+        <option>Fresher</option>
+        <option>1-3 years</option>
+        <option>3-5 years</option>
+        <option>5+ years</option>
+      </select>
+
+      <button onclick="filterJobs()">Apply Filter</button>
+    </div>
+
+    <!-- Job List -->
+    <div class="job-list" id="jobList"></div>
+  </div>
+
+  <footer>© 2025 JobFinder. All Rights Reserved.</footer>
+
+  <!-- Modal for Job Details -->
+  <div class="modal" id="jobModal">
+    <div class="modal-content" id="modalContent">
+      <h3>Job Title</h3>
+      <p>Details will appear here...</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const jobList = document.getElementById("jobList");
+    const jobModal = document.getElementById("jobModal");
+    const modalContent = document.getElementById("modalContent");
+
+    const jobs = [
+      { title: "Frontend Developer", company: "TCS", location: "Bangalore", experience: "1-3 years", eligibility: "B.Tech in CS/IT", salary: "₹6 LPA", apply: "https://tcs.com" },
+      { title: "Backend Developer", company: "Infosys", location: "Hyderabad", experience: "3-5 years", eligibility: "B.Tech/MCA", salary: "₹8 LPA", apply: "https://infosys.com" },
+      { title: "Full Stack Engineer", company: "Google", location: "Remote", experience: "2 years", eligibility: "CS degree or equivalent", salary: "₹25 LPA", apply: "https://careers.google.com" },
+      { title: "Data Analyst", company: "Microsoft", location: "Noida", experience: "Fresher", eligibility: "Any graduate", salary: "₹5 LPA", apply: "https://careers.microsoft.com" },
+      { title: "AI Developer", company: "Wipro", location: "Pune", experience: "1-3 years", eligibility: "AI/ML background", salary: "₹10 LPA", apply: "https://wipro.com" },
+      { title: "Cloud Engineer", company: "Amazon", location: "Chennai", experience: "5+ years", eligibility: "AWS certification", salary: "₹20 LPA", apply: "https://amazon.jobs" },
+      { title: "UI/UX Designer", company: "Zoho", location: "Chennai", experience: "Fresher", eligibility: "Design background", salary: "₹6 LPA", apply: "https://zoho.com" },
+      { title: "DevOps Engineer", company: "HCL", location: "Pune", experience: "3 years", eligibility: "Linux & AWS knowledge", salary: "₹12 LPA", apply: "https://hcltech.com" },
+      { title: "Cyber Security Analyst", company: "IBM", location: "Delhi", experience: "1-3 years", eligibility: "Security certifications preferred", salary: "₹9 LPA", apply: "https://ibm.com" },
+      { title: "Software Tester", company: "Accenture", location: "Mumbai", experience: "Fresher", eligibility: "QA/Testing knowledge", salary: "₹5 LPA", apply: "https://accenture.com" },
+    ];
+
+    // Generate 50+ jobs dynamically
+    for (let i = 0; i < 5; i++) {
+      jobs.forEach(job => {
+        const clone = { ...job, title: job.title + ` (${i + 1})` };
+        jobs.push(clone);
+      });
+    }
+
+    function displayJobs(list) {
+      jobList.innerHTML = "";
+      list.forEach(job => {
+        const div = document.createElement("div");
+        div.className = "job-card";
+        div.innerHTML = `
+          <h4>${job.title}</h4>
+          <p class="company">${job.company}</p>
+          <p>📍 ${job.location}</p>
+          <p>💼 ${job.experience}</p>
+        `;
+        div.onclick = () => openModal(job);
+        jobList.appendChild(div);
+      });
+    }
+
+    function filterJobs() {
+      const role = document.getElementById("role").value.toLowerCase();
+      const company = document.getElementById("company").value.toLowerCase();
+      const location = document.getElementById("location").value.toLowerCase();
+      const experience = document.getElementById("experience").value.toLowerCase();
+
+      const filtered = jobs.filter(
+        job =>
+          (role === "" || job.title.toLowerCase().includes(role)) &&
+          (company === "" || job.company.toLowerCase() === company) &&
+          (location === "" || job.location.toLowerCase().includes(location)) &&
+          (experience === "" || job.experience.toLowerCase().includes(experience))
+      );
+
+      displayJobs(filtered);
+    }
+
+    function openModal(job) {
+      modalContent.innerHTML = `
+        <h3>${job.title}</h3>
+        <p><strong>Company:</strong> ${job.company}</p>
+        <p><strong>Location:</strong> ${job.location}</p>
+        <p><strong>Experience:</strong> ${job.experience}</p>
+        <p><strong>Eligibility:</strong> ${job.eligibility}</p>
+        <p><strong>Salary:</strong> ${job.salary}</p>
+        <a href="${job.apply}" target="_blank">
+          <button class="close-btn">Apply Now</button>
+        </a>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      `;
+      jobModal.style.display = "flex";
+    }
+
+    function closeModal() {
+      jobModal.style.display = "none";
+    }
+
+    displayJobs(jobs);
+  </script>
+</body>
+</html>

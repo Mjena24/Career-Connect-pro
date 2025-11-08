@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Connect - Your Dream Job Awaits</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">Career Connect</div>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="jobs.html">Jobs</a>
+                <a href="login.html">Login</a>
+                <a href="profile.html">Profile</a>
+                <a href="register.html">Register</a>
+            
+
+                
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Find Your Dream Job in India</h1>
+            <p>Explore 50+ top companies hiring across various industries</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Skills, Designation, Companies...">
+                <button onclick="searchJobs()">Search</button>
+            </div>
+            <a href="jobs.html" class="hero-btn">Browse Jobs</a>
+        </div>
+    </section>
+
+    <!-- Job Listings -->
+    <section class="job-listings container">
+        <h2>Recommended Jobs</h2>
+        <div class="jobs-container" id="jobsContainer">
+            <!-- Jobs dynamically added via JS -->
+        </div>
+        <button id="showMoreBtn" class="btn-show-more">Show More Jobs</button>
+    </section>
+
+    <!-- Companies Carousel -->
+    <section class="top-companies">
+  <h2>Top Hiring Companies</h2>
+  <div class="company-logos">
+    <div class="logo"><img src="twitter-3-logo-svgrepo-com.svg" alt="Twitter"></div>
+    <div class="logo"><img src="spotify-1-logo-svgrepo-com.svg" alt="Spotify"></div>
+    <div class="logo"><img src="tinder-1-logo-svgrepo-com.svg" alt="Tinder"></div>
+    <div class="logo"><img src="netflix-2-logo-svgrepo-com.svg" alt="Netflix"></div>
+    <div class="logo"><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Google.png" alt="Google"></div>
+    <div class="logo"><img src="microsoft-logo-svgrepo-com.svg" alt="Microsoft"></div>
+    <div class="logo"><img src="facebook-icon-logo-svgrepo-com.svg" alt="Meta"></div>
+    <div class="logo"><img src="sony-2-logo-svgrepo-com.svg" alt="sony"></div>
+        <div class="logo"><img src="visa-logo-svgrepo-com.svg" alt="visa"></div>
+    <div class="logo"><img src="paypal-logo-svgrepo-com.svg" alt="Paypal"></div>
+    <div class="logo"><img src="samsung-logo-svgrepo-com.svg" alt="Samsung"></div>
+        <div class="logo"><img src="apple-black-logo-svgrepo-com.svg" alt="Apple"></div>
+
+
+  </div>
+</section>
+
+    <!-- Testimonials -->
+    <section class="testimonials container">
+        <h2>What Our Users Say</h2>
+        <div class="testimonial-carousel" id="testimonialCarousel">
+            <div class="testimonial-card">
+                <p>"Got my job in 2 weeks thanks to Career Connect!"</p>
+                <span>- Ramesh K.</span>
+            </div>
+            <div class="testimonial-card">
+                <p>"Amazing platform for freshers and experienced alike."</p>
+                <span>- Priya S.</span>
+            </div>
+            <div class="testimonial-card">
+                <p>"Easy to navigate and find relevant jobs quickly."</p>
+                <span>- Akash M.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About & Tips -->
+    <section class="about container">
+        <h2>About Career Connect</h2>
+        <p>Career Connect is your one-stop platform for discovering jobs, attending webinars, and getting preparation tips. We connect job seekers with top employers across India.</p>
+    </section>
+    <script src="js/auth.js"></script>
+    <script>
+function searchJobs() {
+  const query = document.querySelector('.search-bar input').value.trim();
+
+  if (query === "") {
+    alert("Please enter a job title, skill, or company name.");
+    return;
+  }
+
+  // Save the query temporarily
+  localStorage.setItem("jobSearchQuery", query);
+
+  // Redirect to the jobs page
+  window.location.href = "jobs.html";
+}
+</script>
+<script>
+  // Restore saved theme
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      themeToggle.textContent = '🌙';
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = '☀️';
+    }
+  });
+</script>
+
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('regName').value;
+  const email = document.getElementById('regEmail').value;
+  const password = document.getElementById('regPassword').value;
+
+  const result = registerUser(name, email, password);
+  document.getElementById('registerMsg').innerText = result.message;
+
+  if (result.success) {
+    setTimeout(() => {
+      registerModal.style.display = "none";
+      loginModal.style.display = "flex";
+    }, 1000);
+  }
+});
+
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  const result = loginUser(email, password);
+  document.getElementById('loginMsg').innerText = result.message;
+
+  if (result.success) {
+    setTimeout(() => {
+      window.location.href = "profile.html";
+    }, 1000);
+  }
+});
+</script>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-section">
+                <h3>Career Connect</h3>
+                <p>Connecting talent with opportunity across India.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="jobs.html">Jobs</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: support@careerconnect.com</p>
+                <p>Phone: +91 12345 67890</p>
+                <div class="social-links">
+                    <a href="#">Facebook</a> |
+                    <a href="#">Twitter</a> |
+                    <a href="#">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+        <p class="footer-bottom">© 2025 Career Connect. All Rights Reserved.</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - Career Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #0984e3);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-attachment: fixed;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 60px;
+      background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    nav a {
+      margin: 0 15px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover { color: #dfe6e9; }
+
+    .auth-container {
+      background: rgba(255, 255, 255, 0.2);
+      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      width: 380px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+      margin-top: 100px;
+    }
+
+    h2 { margin-bottom: 15px; }
+
+    select, input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #0984e3;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover { background: #74b9ff; }
+
+    #registerMsg {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      margin-top: 30px;
+      padding-bottom: 20px;
+      font-size: 14px;
+    }
+
+    a { color: #fff; font-weight: 600; text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Career Connect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <div class="auth-container">
+    <h2>Create Your Account</h2>
+    <form id="registerForm">
+      <label for="role">I am a:</label>
+      <select id="role" required>
+        <option value="">-- Select --</option>
+        <option value="seeker">Job Seeker</option>
+        <option value="employer">Employer</option>
+      </select>
+
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password (min 6 chars)" required />
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" required />
+      <input type="text" id="experience" placeholder="Experience (e.g. 2 years)" />
+      <input type="text" id="location" placeholder="Location" required />
+      <input type="text" id="resume" placeholder="Resume link (optional)" />
+      <button type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a href="login.html">Login</a></p>
+    <div id="registerMsg"></div>
+  </div>
+
+  <footer>© 2025 Career Connect. All Rights Reserved.</footer>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:5001/api"; // ✅ use same base as backend
+
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("registerMsg");
+      msg.innerText = "";
+
+      const userData = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value.trim(),
+        dob: document.getElementById("dob").value,
+        experience: document.getElementById("experience").value,
+        location: document.getElementById("location").value,
+        resume: document.getElementById("resume").value,
+        role: document.getElementById("role").value
+      };
+
+      // ✅ Validation
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const email = userData.email.trim().toLowerCase();
+if (!emailPattern.test(email)) {
+    msg.style.color = "yellow";
+    msg.innerText = "⚠️ Please enter a valid email address.";
+    return;
+}
+userData.email = email;
+
+      if (userData.password.length < 6) {
+        msg.style.color = "yellow";
+        msg.innerText = "⚠️ Password must be at least 6 characters.";
+        return;
+      }
+
+      try 
+      {
+
+        const res = await fetch(`${API_BASE}/auth/register`, {
+      method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify(userData),
+  });
+
+
+        const data = await res.json();
+
+        if (res.ok) {
+          msg.style.color = "#00ff88";
+          msg.innerText = "✅ Registration successful! Redirecting...";
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+
+          setTimeout(() => {
+            if (data.user.role === "employer") {
+              window.location.href = "employer-dashboard.html";
+            } else {
+              window.location.href = "profile.html";
+            }
+          }, 1500);
+        } else {
+          msg.style.color = "red";
+          msg.innerText = data.message || "❌ Registration failed.";
+        }
+      } catch (err) {
+        msg.style.color = "orange";
+        msg.innerText = "⚠️ Server not reachable. Check backend.";
+      }
+    });
+  </script>
+</body>
+</html>

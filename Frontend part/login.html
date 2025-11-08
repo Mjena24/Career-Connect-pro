@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Career Connect</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #135f9a);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-attachment: fixed;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(15px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      z-index: 10;
+    }
+
+    .logo {
+      color: rgb(98, 73, 198);
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      color: #f1f1f1;
+      margin-left: 20px;
+      text-decoration: none;
+      font-size: 15px;
+      transition: color 0.3s ease;
+    }
+    .nav-links a:hover { color: #dde2e7; }
+
+    .auth-container {
+      background: rgba(255, 255, 255, 0.15);
+      -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      width: 350px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      margin-top: 90px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #0984e3;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #74b9ff; }
+
+    a { color: #dfe6e9; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    #loginMsg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Career Connect</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="register.html">Register</a>
+    </div>
+  </header>
+
+  <div class="auth-container">
+    <h2>Welcome Back!</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Enter your Email" required />
+      <input type="password" id="password" placeholder="Enter your Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="register.html">Register</a></p>
+    <div id="loginMsg"></div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("loginMsg");
+
+      msg.style.color = "#fff";
+      msg.innerText = "⏳ Logging in...";
+
+      try {
+        const res = await fetch("http://localhost:5001/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // ✅ Save user token and info
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data));
+
+          msg.style.color = "#00ff88";
+          msg.innerText = `🎉 Welcome back, ${data.name || "User"}! Redirecting...`;
+
+          // ✅ Redirect to profile page for both roles
+          setTimeout(() => {
+            window.location.href = "profile.html";
+          }, 1500);
+        } else {
+          msg.style.color = "#ffcc00";
+          msg.innerText = data.message || "Invalid email or password.";
+        }
+      } catch (err) {
+        msg.style.color = "orange";
+        msg.innerText = "⚠️ Server error. Please check if backend is running.";
+      }
+    });
+  </script>
+</body>
+</html>

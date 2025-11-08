@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile - Career Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    body { background-color: #f8f9ff; color: #333; }
+
+    header {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 15px 60px;
+    }
+    .logo { font-size: 22px; font-weight: 700; color: #2563eb; }
+    nav a {
+      margin: 0 20px; color: #333; text-decoration: none; font-weight: 500;
+      transition: 0.3s;
+    }
+    nav a:hover { color: #2563eb; }
+    .user-circle {
+      background: #2563eb; color: white; border-radius: 50%;
+      width: 36px; height: 36px; display: flex; align-items: center;
+      justify-content: center; font-weight: 600;
+    }
+    .logout { color: #ef4444; cursor: pointer; font-weight: 600; text-decoration: none; }
+    .logout:hover { color: #b91c1c; }
+
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+    .card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      padding: 25px; margin-bottom: 25px;
+    }
+
+    .welcome {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+    }
+    .welcome h1 { font-size: 22px; font-weight: 600; color: #111; }
+
+    .buttons { display: flex; gap: 10px; }
+    .btn {
+      border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;
+      font-weight: 500; transition: 0.3s;
+    }
+    .edit-btn { background: #f3f4f6; color: #333; }
+    .edit-btn:hover { background: #e5e7eb; }
+    .primary-btn { background: #2563eb; color: white; }
+    .primary-btn:hover { background: #1d4ed8; }
+
+    .quick-actions { display: flex; gap: 20px; flex-wrap: wrap; }
+    .quick-actions button, .quick-actions a {
+      flex: 1; padding: 14px; border-radius: 10px; border: 1px solid #ddd;
+      background: #f9fafb; font-weight: 500; cursor: pointer; text-align: center;
+      transition: all 0.3s;
+    }
+    .quick-actions button:hover, .quick-actions a:hover {
+      background: #eef2ff; color: #2563eb; border-color: #2563eb;
+    }
+
+    .progress {
+      background: #e5e7eb; border-radius: 10px; height: 10px; overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress-bar {
+      background: #2563eb; height: 10px; width: 0%;
+      transition: width 0.4s ease-in-out;
+    }
+
+    .muted { color: #6b7280; font-size: 14px; }
+
+    /* Modal */
+    #editModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      max-width: 90%;
+    }
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Career Connect</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="jobs.html">Jobs</a>
+    </nav>
+    <div class="user-section">
+      <span class="user-circle" id="user-initial">U</span>
+      <a class="logout" id="logout-btn">Logout</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card welcome">
+      <div>
+        <h1>Welcome back, <span id="user-name">User</span>!</h1>
+        <p id="user-role" class="muted">Jobseeker</p>
+      </div>
+      <div class="buttons">
+        <button class="btn edit-btn" id="edit-profile">Edit Profile</button>
+      </div>
+    </div>
+
+    <!-- Jobseeker Section -->
+    <div id="seeker-section">
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div class="quick-actions">
+          <a href="jobs.html">Browse Jobs</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>My Applications</h3>
+        <p>You haven't applied to any jobs yet.</p>
+      </div>
+    </div>
+
+    <!-- Employer Section -->
+    <div id="employer-section" style="display: none;">
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div class="quick-actions">
+          <button id="post-job">Post New Job</button>
+          <a href="#">View Applications</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Company Details</h3>
+        <p><strong>Company Name:</strong> <span id="companyName">--</span></p>
+        <p><strong>Website:</strong> <span id="companyWebsite">--</span></p>
+        <p><strong>Description:</strong> <span id="companyDescription">No description added yet.</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal">
+    <div class="modal-content">
+      <h3>Edit Profile</h3>
+      <input type="text" id="editName" placeholder="Your Name or Company Name" />
+      <input type="text" id="editWebsite" placeholder="Company Website (optional)" />
+      <textarea id="editDesc" placeholder="Description..."></textarea>
+      <button class="primary-btn" id="saveProfile">Save</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem("token");
+    if (!token) window.location.href = "login.html";
+
+    async function fetchProfile() {
+      try {
+        const res = await fetch("http://localhost:5001/api/user/profile", {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        const data = await res.json();
+        if (!res.ok) return alert(data.message || "Failed to load profile.");
+
+        document.getElementById("user-name").textContent = data.name || "User";
+        document.getElementById("user-initial").textContent = data.name?.charAt(0).toUpperCase() || "U";
+        document.getElementById("user-role").textContent = data.role;
+
+        if (data.role === "employer") {
+          document.getElementById("seeker-section").style.display = "none";
+          document.getElementById("employer-section").style.display = "block";
+
+          document.getElementById("companyName").textContent = data.companyName || "—";
+          document.getElementById("companyWebsite").textContent = data.companyWebsite || "—";
+          document.getElementById("companyDescription").textContent = data.companyDescription || "No description added yet.";
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error loading profile.");
+      }
+    }
+
+    fetchProfile();
+
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+    });
+
+    // Edit profile modal
+    document.getElementById("edit-profile").onclick = () => {
+      document.getElementById("editModal").style.display = "flex";
+    };
+    document.getElementById("saveProfile").onclick = async () => {
+      const name = document.getElementById("editName").value;
+      const website = document.getElementById("editWebsite").value;
+      const desc = document.getElementById("editDesc").value;
+
+      try {
+        const res = await fetch("http://localhost:5001/api/user/update", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ name, companyWebsite: website, companyDescription: desc }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert("✅ Profile updated successfully!");
+          document.getElementById("editModal").style.display = "none";
+          fetchProfile();
+        } else {
+          alert(data.message || "Error updating profile.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Error updating profile.");
+      }
+    };
+
+    // Post New Job
+    document.getElementById("post-job").onclick = async () => {
+      const title = prompt("Enter Job Title:");
+      const description = prompt("Enter Job Description:");
+      if (!title || !description) return alert("Please fill both fields!");
+
+      try {
+        const res = await fetch("http://localhost:5001/api/jobs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({ title, description }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert("✅ Job posted successfully!");
+        } else {
+          alert("⚠️ " + (data.message || "Failed to post job."));
+        }
+      } catch (err) {
+        console.error(err);
+        alert("⚠️ Error posting job.");
+      }
+    };
+  </script>
+</body>
+</html>
